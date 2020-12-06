@@ -3,14 +3,14 @@ using System.IO;
 using System.Collections.Generic;
 class Program {
     static void Main(String[] args){
-        Console.WriteLine("args are: "+args[0]);
+        Console.WriteLine("Specified Directory is: "+args[0]);
         Program p = new Program();
         p.getFileSize(args[0]);
         p.getDirs(args[0]);
         Dictionary<string, long> finalAns = p.calcSize(args[0]);
         foreach (KeyValuePair<string, long> kvp in finalAns)
         {
-            Console.WriteLine("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
+            Console.WriteLine("Dir = {0}, Size = {1}", kvp.Key, kvp.Value);
         }
         
     }
@@ -56,11 +56,7 @@ class Program {
     }
 
     string[] getDirs(String dir){
-        // Console.WriteLine("All dirs are: ");
         string[] dirs = Directory.GetDirectories(dir);
-        // foreach (string name in dirs){
-        //     Console.WriteLine(name);
-        // }
         return dirs;
     }
     
