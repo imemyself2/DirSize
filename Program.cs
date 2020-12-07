@@ -1,30 +1,43 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 class Program {
     static void Main(String[] args){
         Console.WriteLine("Specified Directory is: "+args[0]);
         Program p = new Program();
         p.getFileSize(args[0]);
         p.getDirs(args[0]);
-        Dictionary<string, long> finalAns = p.calcSize(args[0]);
-        foreach (KeyValuePair<string, long> kvp in finalAns)
+        Dictionary<string, decimal> finalAns = p.calcSize(args[0]);
+        var sortedSize = finalAns.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+        foreach (KeyValuePair<string, decimal> kvp in sortedSize)
         {
-            Console.WriteLine("Dir = {0}, Size = {1}", kvp.Key, kvp.Value);
+            if((kvp.Value / 1024 /1024) < 1){
+                // finalAns[kvp.Key] = kvp.Value / 1024;
+                Console.WriteLine("Dir = {0}, Size = {1}", kvp.Key, (kvp.Value/1024).ToString("#.##") +" KB");
+            }
+            else if((kvp.Value / 1024 / 1024 / 1024) < 1){
+                // finalAns[kvp.Key] = kvp.Value/1024;
+                Console.WriteLine("Dir = {0}, Size = {1}", kvp.Key, (kvp.Value/1024/1024).ToString("#.##") +" MB");
+            }
+            else{
+                Console.WriteLine("Dir = {0}, Size = {1}", kvp.Key, (kvp.Value/1024/1024/1024).ToString("#.##") +" GB");
+            }
+            
         }
         
     }
 
-    Dictionary<string, long> calcSize(String dir){
+    Dictionary<string, decimal> calcSize(String dir){
         // Recurse into folders and calculate sizes
         string[] MainDirs = getDirs(dir);        
-        Dictionary<string, long> finalDirSize = new Dictionary<string, long>();
+        Dictionary<string, decimal> finalDirSize = new Dictionary<string, decimal>();
         if(MainDirs.Length == 0){
             // Folder has no subDirs, calc size
-            Dictionary<string, long> totalDirSize = getFileSize(dir);
-            Dictionary<string, long> innerDirSize = new Dictionary<string, long>();
-            long sum = 0;
-            foreach (KeyValuePair<string, long> kvp in totalDirSize)
+            Dictionary<string, decimal> totalDirSize = getFileSize(dir);
+            Dictionary<string, decimal> innerDirSize = new Dictionary<string, decimal>();
+            decimal sum = 0;
+            foreach (KeyValuePair<string, decimal> kvp in totalDirSize)
             {
                 if(kvp.Key != dir)
                 sum += kvp.Value;
@@ -34,16 +47,16 @@ class Program {
             
         }
         else{
-            Dictionary<string, long> fileDict = getFileSize(dir);
-            long fileSum = 0;
-            foreach (KeyValuePair<string, long> kvp in fileDict){
+            Dictionary<string, decimal> fileDict = getFileSize(dir);
+            decimal fileSum = 0;
+            foreach (KeyValuePair<string, decimal> kvp in fileDict){
                 if(kvp.Key != dir)
                 fileSum+=kvp.Value;
             }
-            long dirSum = 0;
+            decimal dirSum = 0;
             foreach (string name in MainDirs){
                 // Call CalcSize to find inner subDirs
-                Dictionary<string, long> ans = calcSize(name);
+                Dictionary<string, decimal> ans = calcSize(name);
                 dirSum += ans[name];
                 finalDirSize.Add(name, ans[name]);
             }
@@ -60,13 +73,13 @@ class Program {
         return dirs;
     }
     
-    Dictionary<string, long> getFileSize(String dir){
-        Dictionary<string, long> files = new Dictionary<string, long>();
+    Dictionary<string, decimal> getFileSize(String dir){
+        Dictionary<string, decimal> files = new Dictionary<string, decimal>();
         string[] filesArr = Directory.GetFiles(dir);
-        long totalSize = 0;
+        decimal totalSize = 0;
         foreach (string name in filesArr){
             FileInfo info = new FileInfo(name);
-            long size = info.Length;
+            decimal size = info.Length;
             totalSize+=size;
             files.Add(name, size);
         }
