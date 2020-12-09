@@ -17,3 +17,4 @@ D:\Work\Projects\DirSize\DirSize\obj\Debug\DirSize.pdb
 D:\Work\Projects\DirSize\DirSize\bin\Debug\LiveCharts.WinForms.dll
 D:\Work\Projects\DirSize\DirSize\bin\Debug\LiveCharts.WinForms.pdb
 D:\Work\Projects\DirSize\DirSize\bin\Debug\LiveCharts.WinForms.xml
+D:\Work\Projects\DirSize\DirSize\obj\Debug\DirSize.csprojAssemblyReference.cache

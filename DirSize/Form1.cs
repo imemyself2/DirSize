@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using System.IO;
 using LiveCharts;
 using LiveCharts.Wpf;
-
+using LiveCharts.WinForms;
 namespace DirSize
 {
     public partial class Form1 : Form
@@ -57,7 +57,33 @@ namespace DirSize
 
             }
             DataChart.Series = new SeriesCollection { };
-            DataChart.LegendLocation = LegendLocation.Bottom;
+            DataChart.LegendLocation = LegendLocation.None;
+            DataChart.HoverPushOut = 0;
+
+            var tooltip = (LiveCharts.Wpf.DefaultTooltip)DataChart.DataTooltip;
+            tooltip.SelectionMode = LiveCharts.TooltipSelectionMode.OnlySender;
+
+            ListView DataList = new ListView();
+            DataList.Name = "Distribution";
+            DataList.Location = new System.Drawing.Point(28, 57);
+            DataList.Size = new System.Drawing.Size(377, 316);
+            DataList.Scrollable = true;
+            DataList.View = View.Details;
+            
+
+            // Add columns
+            ColumnHeader header = new ColumnHeader();
+            header.Text = "Directory";
+            header.Name = "Directory";
+            DataList.Columns.Add(header);
+
+            ColumnHeader size = new ColumnHeader();
+            size.Text = "Size";
+            size.Name = "Size";
+            DataList.Columns.Add(size);
+
+            Controls.Add(DataList);
+
             foreach (KeyValuePair<string, decimal> kvp in sortedSize)
             {
                 if(kvp.Key != filePath)
@@ -78,14 +104,31 @@ namespace DirSize
                     {
                         sizeType = (kvp.Value / 1024 / 1024 / 1024).ToString("#.##") + " GB";
                     }
-                    Func<ChartPoint, string> labelPoint = chartPoint => string.Format("({0})", chartPoint.Y);
+                    if(sizeType == " KB")
+                    {
+                        sizeType = "0 KB";
+                    }
+                    Func<ChartPoint, string> labelPoint = chartPoint => (chartPoint.Y / 1024 / 1024) < 1 ? string.Format("({0:#.##} KB)", (chartPoint.Y / 1024)) :
+                                                                        (chartPoint.Y / 1024 / 1024 / 1024) < 1 ? string.Format("({0:#.##} MB)", (chartPoint.Y / 1024 / 1024)) :
+                                                                        string.Format("({0:#.##} GB)", (chartPoint.Y / 1024 / 1024 / 1024));
+                    string name = kvp.Key;
+                    if (name.Contains(filePath))
+                    {
+                        name = name.Substring(filePath.Length+1);
+                    }
+                    string[] DataRow = { name, sizeType };
+                    var DataListItem = new ListViewItem(DataRow);
+                    DataList.Items.Add(DataListItem);
+                    DataList.Columns[0].Width = -1;
+                    DataList.Columns[1].Width = -1;
 
                     DataChart.Series.Add(new PieSeries {
                         Title = kvp.Key,
                         Values = new ChartValues<decimal> {kvp.Value},
-                        PushOut = 5,
+                        PushOut = 0,
                         DataLabels = false,
-                        //LabelPoint = labelPoint
+                        StrokeThickness = 0,
+                        LabelPoint = labelPoint,
                     });
                 }     
             }
@@ -128,7 +171,7 @@ namespace DirSize
                     finalDirSize.Add(name, ans[name]);
                 }
                 finalDirSize.Add(dir, dirSum + fileSum);
-                finalDirSize.Add("files", fileSum);
+                finalDirSize.Add("Files", fileSum);
                 return finalDirSize;
             }
 
@@ -173,6 +216,16 @@ namespace DirSize
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
             lastPoint = new Point(e.X, e.Y);
+        }
+
+        private void DataChart_ChildChanged(object sender, System.Windows.Forms.Integration.ChildChangedEventArgs e)
+        {
+
+        }
+
+        private void okButton_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }
