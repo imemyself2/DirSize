@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using LiveCharts;
+using LiveCharts.Wpf;
 
 namespace DirSize
 {
@@ -17,13 +19,21 @@ namespace DirSize
         {
             InitializeComponent();
         }
-
+        Point lastPoint;
         private void Form1_Load(object sender, EventArgs e)
         {
 
 
             //Program p = new Program();
-            string filePath = Environment.GetCommandLineArgs()[1];
+            string filePath = "";
+            try
+            {
+                filePath = Environment.GetCommandLineArgs()[1];
+            }
+            catch (Exception)
+            {
+                filePath = "D:\\Work";
+            }
             getFileSize(filePath);
             getDirs(filePath);
             Dictionary<string, decimal> finalAns = calcSize(filePath);
@@ -46,11 +56,37 @@ namespace DirSize
                 }
 
             }
+            DataChart.Series = new SeriesCollection { };
+            DataChart.LegendLocation = LegendLocation.Bottom;
             foreach (KeyValuePair<string, decimal> kvp in sortedSize)
             {
                 if(kvp.Key != filePath)
                 {
-                    DataChart.Series["dirSize"].Points.AddXY(kvp.Key, Decimal.ToDouble(kvp.Value));
+                    //DataChart.Series["dirSize"].Points.AddXY(kvp.Key, Decimal.ToDouble(kvp.Value));
+                    string sizeType = "";
+                    if ((kvp.Value / 1024 / 1024) < 1)
+                    {
+                        // finalAns[kvp.Key] = kvp.Value / 1024;
+                        sizeType = (kvp.Value / 1024).ToString("#.##") + " KB";
+                    }
+                    else if ((kvp.Value / 1024 / 1024 / 1024) < 1)
+                    {
+                        // finalAns[kvp.Key] = kvp.Value/1024;
+                        sizeType = (kvp.Value / 1024 / 1024).ToString("#.##") + " MB";
+                    }
+                    else
+                    {
+                        sizeType = (kvp.Value / 1024 / 1024 / 1024).ToString("#.##") + " GB";
+                    }
+                    Func<ChartPoint, string> labelPoint = chartPoint => string.Format("({0})", chartPoint.Y);
+
+                    DataChart.Series.Add(new PieSeries {
+                        Title = kvp.Key,
+                        Values = new ChartValues<decimal> {kvp.Value},
+                        PushOut = 5,
+                        DataLabels = false,
+                        //LabelPoint = labelPoint
+                    });
                 }     
             }
         }
@@ -123,6 +159,20 @@ namespace DirSize
         private void DataChart_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void Form1_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                this.Left += e.X - lastPoint.X;
+                this.Top += e.Y - lastPoint.Y;
+            }
+        }
+
+        private void Form1_MouseDown(object sender, MouseEventArgs e)
+        {
+            lastPoint = new Point(e.X, e.Y);
         }
     }
 }

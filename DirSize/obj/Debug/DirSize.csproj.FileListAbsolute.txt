@@ -7,7 +7,6 @@ D:\Work\Projects\DirSize\DirSize\bin\Debug\LiveCharts.pdb
 D:\Work\Projects\DirSize\DirSize\bin\Debug\LiveCharts.xml
 D:\Work\Projects\DirSize\DirSize\bin\Debug\LiveCharts.Wpf.pdb
 D:\Work\Projects\DirSize\DirSize\bin\Debug\LiveCharts.Wpf.xml
-D:\Work\Projects\DirSize\DirSize\obj\Debug\DirSize.csprojAssemblyReference.cache
 D:\Work\Projects\DirSize\DirSize\obj\Debug\DirSize.Form1.resources
 D:\Work\Projects\DirSize\DirSize\obj\Debug\DirSize.Properties.Resources.resources
 D:\Work\Projects\DirSize\DirSize\obj\Debug\DirSize.csproj.GenerateResource.cache
@@ -15,3 +14,6 @@ D:\Work\Projects\DirSize\DirSize\obj\Debug\DirSize.csproj.CoreCompileInputs.cach
 D:\Work\Projects\DirSize\DirSize\obj\Debug\DirSize.csproj.CopyComplete
 D:\Work\Projects\DirSize\DirSize\obj\Debug\DirSize.exe
 D:\Work\Projects\DirSize\DirSize\obj\Debug\DirSize.pdb
+D:\Work\Projects\DirSize\DirSize\bin\Debug\LiveCharts.WinForms.dll
+D:\Work\Projects\DirSize\DirSize\bin\Debug\LiveCharts.WinForms.pdb
+D:\Work\Projects\DirSize\DirSize\bin\Debug\LiveCharts.WinForms.xml

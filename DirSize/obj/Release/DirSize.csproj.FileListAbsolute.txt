@@ -17,3 +17,4 @@ D:\Work\Projects\DirSize\DirSize\obj\Release\DirSize.pdb
 D:\Work\Projects\DirSize\Release\DirSize.exe.config
 D:\Work\Projects\DirSize\Release\DirSize.exe
 D:\Work\Projects\DirSize\Release\DirSize.pdb
+D:\Work\Projects\DirSize\DirSize\obj\Release\DirSize.csprojAssemblyReference.cache
